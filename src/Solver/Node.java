@@ -2,29 +2,34 @@ package Solver;
 
 import javafx.scene.control.Button;
 
-public class Node {
+class Node {
     private boolean inQueue;
     private int value;
     private Button tile;
-    Node(int value, Button tile){
-        this.value=value;
-        this.tile=tile;
-        inQueue=false;
+
+    Node(int value, Button tile) {
+        this.value = value;
+        this.tile = tile;
+        inQueue = false;
     }
 
-    public int getValue(){
+    int getValue() {
         return value;
     }
 
-    public void setValue(int value){
-        this.value=value;
+    void setValue(int value) {
+        this.value = value;
     }
 
-    public boolean getInQueue(){
+    boolean isInQueue() {
         return inQueue;
     }
 
-    public void fire(){
+    void setInQueue(boolean inQueue) {
+        this.inQueue = inQueue;
+    }
+
+    void fire() {
         tile.fire();
     }
 }

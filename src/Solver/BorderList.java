@@ -1,23 +1,26 @@
 package Solver;
 
-import java.util.ArrayDeque;
+import java.util.LinkedList;
 
-public class BorderList extends ArrayDeque<Integer> {
+public class BorderList extends LinkedList<Integer> {
     private Node[] board;
-    BorderList(Node[] board){
-        this.board=board;
+
+    BorderList(Node[] board) {
+        this.board = board;
     }
-    public boolean add(Integer i){
-        if(board[i].isInQueue())
+
+    public boolean add(Integer i) {
+        if (board[i].isInQueue())
             return false;
-        if(super.add(i)){
+        if (super.add(i)) {
             board[i].setInQueue(true);
             return true;
         }
         return false;
     }
-    public Integer pop(){
-        int id=super.pop();
+
+    public Integer pop() {
+        int id = super.pop();
         board[id].setInQueue(false);
         return id;
     }

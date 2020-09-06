@@ -9,17 +9,16 @@ import java.util.concurrent.CountDownLatch;
 
 
 public class Solver extends Thread {
-    private ArrayList<Integer> emptyTiles;
-    private Node[] board;
-    private final int width, height;
-    private Random rng;
     private static final Integer unknownTile = -2;
-    private static final Integer mine = -1;
-    private ArrayDeque<Integer> feedback;
-    private BorderList border;
+    private final int width, height;
+    private List<Integer> unknownTiles;
+    private Node[] board;
     private Communicator botTalker;
+    private Deque<Integer> feedback;
+    private Random rng;
+    private BorderList border;
 
-    public Solver(int width, int height, int mines, Button[] tiles, ArrayDeque<Integer> feedback, Communicator botTalker) {
+    public Solver(int width, int height, Button[] tiles, Deque<Integer> feedback, Communicator botTalker) {
         this.width = width;
         this.height = height;
         this.feedback = feedback;
@@ -28,9 +27,9 @@ public class Solver extends Thread {
         board = new Node[width * height];
         for (int i = height * width - 1; i >= 0; --i)
             board[i] = new Node(unknownTile, tiles[i]);
-        emptyTiles = new ArrayList<>(width * height);
+        unknownTiles = new ArrayList<>(width * height);
         for (int i = 0; i < width * height; ++i)
-            emptyTiles.add(i, i);
+            unknownTiles.add(i);
         border = new BorderList(board);
     }
 
@@ -59,7 +58,7 @@ public class Solver extends Thread {
                 }
             }
 
-            if (feedback.peekFirst().equals(-1))
+            if (feedback.peekFirst() == -1)
                 return;
             while (!feedback.isEmpty()) {
                 int id = feedback.pop();
@@ -67,7 +66,7 @@ public class Solver extends Thread {
                 setValue(value, id);
             }
 
-            //Slow down to see clicks (obsolete)
+            //Slow down to see clicks (optional)
             /*
             try {
                 sleep(1000);
@@ -76,14 +75,13 @@ public class Solver extends Thread {
         }
     }
 
-
     private ArrayList<Integer> valueNeighbours = new ArrayList<>(8);
 
     private void setValue(int value, int id) {
         board[id].setValue(value);
-        int tmp = emptyTiles.indexOf(id);
-        emptyTiles.set(tmp, emptyTiles.get(emptyTiles.size() - 1));
-        emptyTiles.remove(emptyTiles.size() - 1);
+        int tmp = unknownTiles.indexOf(id);
+        unknownTiles.set(tmp, unknownTiles.get(unknownTiles.size() - 1));
+        unknownTiles.remove(unknownTiles.size() - 1);
 
         if (value > 0)
             border.add(id);
@@ -96,9 +94,8 @@ public class Solver extends Thread {
     }
 
     private int randomShot() {
-        return emptyTiles.get(rng.nextInt(emptyTiles.size()));
+        return unknownTiles.get(rng.nextInt(unknownTiles.size()));
     }
-
 
     private ArrayList<Integer> neighbours = new ArrayList<>(8);
 
@@ -112,7 +109,7 @@ public class Solver extends Thread {
             for (Integer neighbour : neighbours) {
                 if (board[neighbour].getValue() == unknownTile)
                     hidden++;
-                else if (board[neighbour].getValue() == mine)
+                else if (board[neighbour].getValue() == Common.mine)
                     mines++;
             }
 
@@ -128,7 +125,7 @@ public class Solver extends Thread {
             if (board[pos].getValue() - mines == hidden) {
                 for (Integer neighbour : neighbours) {
                     if (board[neighbour].getValue() == unknownTile) {
-                        setValue(mine, neighbour);
+                        setValue(Common.mine, neighbour);
                     }
                 }
             }

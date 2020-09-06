@@ -10,16 +10,16 @@
         <HBox spacing="20">
             <HBox alignment="CENTER_LEFT">
                 <Label text="Width: "/>
-                <TextField fx:id="widthField" maxWidth="60"/>
+                <TextField fx:id="widthField" maxWidth="60" text="10"/>
             </HBox>
             <HBox alignment="CENTER_RIGHT">
                 <Label text="Height: "/>
-                <TextField fx:id="heightField" maxWidth="60"/>
+                <TextField fx:id="heightField" maxWidth="60" text="10"/>
             </HBox>
         </HBox>
         <HBox alignment="center">
             <Label text="Mines: "/>
-            <TextField fx:id="minesField" maxWidth="60"/>
+            <TextField fx:id="minesField" maxWidth="60" text="12"/>
         </HBox>
     </VBox>
     <VBox spacing="25" alignment="center" GridPane.rowIndex="1">

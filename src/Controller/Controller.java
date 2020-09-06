@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class Controller {
     @FXML
@@ -23,15 +24,19 @@ public class Controller {
     private TextField widthField;
     @FXML
     private Button newGameButton;
+
     private Stage gameLost = new EndWindow("You Lose");
     private Stage gameWon = new EndWindow("You Win");
     private BoardView boardView;
     private Board board;
-    private int width, height, mines;
+
+    private int width;
+    private int height;
+    private int mines;
 
     private Button solveButton;
     private Communicator botTalker;
-    private ArrayDeque<Integer> answer;
+    private Deque<Integer> revealedInfo;
 
     @FXML
     private void exit() {
@@ -46,9 +51,9 @@ public class Controller {
     }
 
     private void autoSolve(Node[] buttons) {
-        ArrayDeque<Integer> feedback = new ArrayDeque<>();
+        Deque<Integer> feedback = new ArrayDeque<>();
         botTalker = new Communicator(feedback);
-        Solver bot = new Solver(width, height, mines, buttons, feedback, botTalker);
+        Solver bot = new Solver(width, height, buttons, feedback, botTalker);
 
         bot.start();
     }
@@ -93,9 +98,8 @@ public class Controller {
             mines = Integer.parseInt(minesField.getText());
             width = Integer.parseInt(widthField.getText());
             height = Integer.parseInt(heightField.getText());
-        } catch (Exception e) {
-            width = height = 10;
-            mines = 12;
+        } catch (Exception ignore) {
+            //TODO handle the exception
         }
     }
 
@@ -103,8 +107,8 @@ public class Controller {
         if (!solveButton.isDisable())
             solveButton.setDisable(true);
 
-        answer = boardView.reveal(pos);
-        int numOfRevealed = answer.pop();
+        revealedInfo = boardView.reveal(pos);
+        int numOfRevealed = revealedInfo.pop();
 
         if (board.checkFail(pos)) {
             finish(gameLost);
@@ -113,13 +117,14 @@ public class Controller {
         }
 
         if (botTalker != null)
-            botTalker.send(answer);
+            botTalker.send(revealedInfo);
     }
 
     private void finish(Stage endStage) {
         boardView.disableAll();
+        //boardView.showBombs();
+        revealedInfo.clear();
+        revealedInfo.add(-1);
         endStage.show();
-        answer.clear();
-        answer.add(-1);
     }
 }

@@ -29,7 +29,7 @@ public class Controller {
     private Board board;
     private int width, height, mines;
 
-    private Solver bot;
+    private Button solveButton;
     private Communicator botTalker;
     private ArrayDeque<Integer> answer;
 
@@ -45,7 +45,11 @@ public class Controller {
         generateGame().show();
     }
 
-    private void autoSolve() {
+    private void autoSolve(Node[] buttons) {
+        ArrayDeque<Integer> feedback = new ArrayDeque<>();
+        botTalker = new Communicator(feedback);
+        Solver bot = new Solver(width, height, mines, buttons, feedback, botTalker);
+
         bot.start();
     }
 
@@ -58,21 +62,16 @@ public class Controller {
             buttons[pos] = tmp;
         }
 
-        ArrayDeque<Integer> feedback = new ArrayDeque<>();
-        botTalker = new Communicator(feedback);
-        bot = new Solver(width, height, mines, buttons, feedback, botTalker);
-
         board = new Board(width, height, mines);
         int[] rawValues = board.getValues();
 
         Button exitButton = new Button("Exit");
         exitButton.setOnAction((event) -> exit());
 
-        Button solveButton = new Button("Solve");
-        solveButton.setOnAction((event) -> autoSolve());
+        solveButton = new Button("Solve");
+        solveButton.setOnAction((event) -> autoSolve(buttons));
 
         Button replayButton = new Button("Replay");
-
 
         boardView = new BoardView(buttons, rawValues, exitButton, replayButton, solveButton, width, height);
 
@@ -101,6 +100,9 @@ public class Controller {
     }
 
     private void show(int pos) {
+        if (!solveButton.isDisable())
+            solveButton.setDisable(true);
+
         answer = boardView.reveal(pos);
         int numOfRevealed = answer.pop();
 
@@ -110,7 +112,8 @@ public class Controller {
             finish(gameWon);
         }
 
-        botTalker.send(answer);
+        if (botTalker != null)
+            botTalker.send(answer);
     }
 
     private void finish(Stage endStage) {

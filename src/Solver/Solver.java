@@ -1,12 +1,14 @@
 package Solver;
 
 import Common.Common;
+
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
+import org.jetbrains.annotations.NotNull;
 
 public class Solver extends Thread {
     private static final Integer unknownTile = -2;
@@ -18,7 +20,7 @@ public class Solver extends Thread {
     private Random rng;
     private BorderList border;
 
-    public Solver(int width, int height, Button[] tiles, Deque<Integer> feedback, Communicator botTalker) {
+    public Solver(int width, int height,@NotNull Button[] tiles,@NotNull Deque<Integer> feedback,@NotNull Communicator botTalker) {
         this.width = width;
         this.height = height;
         this.feedback = feedback;

@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.jetbrains.annotations.NotNull;
+
 class BoardGeneratorSimple implements IBoardGenerator {
-    public void generate(int[] board, int width, int height, int mines) {
+    @NotNull
+    public int[] generate(int width, int height, int mines) {
+        int[] board = new int[width * height];
         Random rng = new Random();
         List<Integer> freePositions = new ArrayList<>(height * width);
         for (int i = 0; i < height * width; ++i)
@@ -21,5 +25,6 @@ class BoardGeneratorSimple implements IBoardGenerator {
         }
 
         fillUp(board, width, height);
+        return board;
     }
 }

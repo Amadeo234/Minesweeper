@@ -19,7 +19,7 @@ public class BoardView extends Stage {
 
 
     public BoardView(Button[] buttons, int[] rawValues, Button exitButton, Button replayButton, Button solveButton,
-                     int width, int height) throws Exception {
+                     int width, int height) {
         super();
 
         this.width = width;

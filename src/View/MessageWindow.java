@@ -8,8 +8,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class EndWindow extends Stage {
-    public EndWindow(String msg) {
+public class MessageWindow extends Stage {
+    public MessageWindow(String msg) {
         Text endMessage = new Text(msg);
         Button closeButton = new Button("Close");
         closeButton.setOnAction((event) -> this.close());

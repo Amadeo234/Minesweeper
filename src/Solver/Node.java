@@ -2,12 +2,14 @@ package Solver;
 
 import javafx.scene.control.Button;
 
+import org.jetbrains.annotations.NotNull;
+
 class Node {
     private boolean inQueue;
     private int value;
     private Button tile;
 
-    Node(int value, Button tile) {
+    Node(int value,@NotNull Button tile) {
         this.value = value;
         this.tile = tile;
         inQueue = false;

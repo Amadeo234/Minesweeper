@@ -4,6 +4,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <GridPane fx:controller="Controller.Controller"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="25">
     <VBox spacing="20" alignment="center" GridPane.rowIndex="0">
@@ -24,6 +27,17 @@
     </VBox>
     <VBox spacing="25" alignment="center" GridPane.rowIndex="1">
         <Button fx:id="newGameButton" text="New Game" onAction="#newGame"/>
+        <HBox alignment="CENTER" spacing="25">
+        <Button fx:id="customGameButton" text="Custom Game" onAction="#customGame"/>
+            <ChoiceBox fx:id="customGameMap" value="Map_01">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Map_01"/>
+                        <String fx:value="Map_02"/>
+                    </FXCollections>
+                </items>
+            </ChoiceBox>
+        </HBox>
         <Button text="Exit" onAction="#exit"/>
     </VBox>
 </GridPane>

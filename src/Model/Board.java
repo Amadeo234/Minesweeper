@@ -2,17 +2,18 @@ package Model;
 
 import Common.Common;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Board {
     private int[] board;
     private int remainingTiles;
 
-    public Board(int width, int height, int mines) {
-        board = new int[height * width];
+    public Board(int width, int height, int mines,@NotNull IBoardGenerator boardGenerator) {
+        board = boardGenerator.generate(width, height, mines);
         this.remainingTiles = width * height - mines;
-        IBoardGenerator boardGenerator = new BoardGeneratorSimple();
-        boardGenerator.generate(board, width, height, mines);
     }
 
+    @NotNull
     public int[] getValues() {
         return board;
     }

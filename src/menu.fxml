@@ -34,6 +34,7 @@
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="Map_01"/>
                         <String fx:value="Map_02"/>
+                        <String fx:value="Map_03"/>
                     </FXCollections>
                 </items>
             </ChoiceBox>

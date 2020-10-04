@@ -104,6 +104,7 @@ public class Controller {
     }
 
     private void autoSolve(@NotNull Node[] buttons) {
+        solveButton.setDisable(true);
         Deque<Integer> feedback = new ArrayDeque<>();
         botTalker = new Communicator(feedback);
         new Solver(width, height, buttons, feedback, botTalker).start();
@@ -114,6 +115,7 @@ public class Controller {
         gameLost.close();
         boardView.close();
         replayGame.run();
+        solveButton.setDisable(false);
     }
 
     private BoardView generateGame(@NotNull IBoardGenerator boardGenerator) {
@@ -158,9 +160,6 @@ public class Controller {
     }
 
     private void show(int pos) {
-        if (!solveButton.isDisable())
-            solveButton.setDisable(true);
-
         revealedInfo = boardView.reveal(pos);
         int numOfRevealed = revealedInfo.pop();
 

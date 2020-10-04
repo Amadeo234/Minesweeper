@@ -13,9 +13,7 @@ public class BorderList extends LinkedList<Integer> {
     }
 
     public boolean add(Integer i) {
-        if (i == null)
-            return false;
-        if (board[i].isInQueue())
+        if (i == null || board[i].isInQueue())
             return false;
         if (super.add(i)) {
             board[i].setInQueue(true);

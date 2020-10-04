@@ -90,7 +90,7 @@ public class Solver extends Thread {
         valueNeighbours.clear();
         Common.addNeighbours(valueNeighbours, id, width, height);
         for (Integer neighbour : valueNeighbours) {
-            if (value > 0)
+            if (neighbour > 0)
                 border.add(neighbour);
         }
     }

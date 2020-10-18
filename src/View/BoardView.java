@@ -6,55 +6,47 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Deque;
 import java.util.LinkedList;
 
 public class BoardView extends Stage {
-    private GridPane gameBoard;
+    private ButtonsBoard gameBoard;
     private String[] values;
     private int[] rawValues;
     private final int width, height;
+    private int gamesWon = 0;
+    private int gamesLost = 0;
+    private Text gamesWonText = new Text("0");
+    private Text gamesLostText = new Text("0");
+    private Text winRateText = new Text("0,00");
+    static final int buttonSize = 25;
 
-
-    public BoardView(Button[] buttons, int[] rawValues, Button exitButton, Button replayButton, Button solveButton,
-                     int width, int height) {
+    public BoardView(@NotNull Button exitButton, @NotNull Button replayButton,
+                     @NotNull Button solveButton, int width, int height) {
         super();
-
         this.width = width;
         this.height = height;
-        this.rawValues = rawValues;
-        values = new String[height * width];
-        processValues();
-
-        int buttonSideSize = 25;
-
-        gameBoard = new GridPane();
-        gameBoard.setAlignment(Pos.CENTER);
-        for (int pos = 0; pos < height * width; ++pos) {
-            buttons[pos].setMaxSize(buttonSideSize, buttonSideSize);
-            buttons[pos].setMinSize(buttonSideSize, buttonSideSize);
-            gameBoard.add(buttons[pos], pos % width, pos / width);
-        }
+        this.values = new String[height * width];
 
         VBox root = new VBox();
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(10, 15, 10, 15));
         root.setSpacing(20);
-        root.getChildren().add(gameBoard);
-
-        HBox menuButtons = new HBox();
-        Region spaceFiller1 = new Region();
-        Region spaceFiller2 = new Region();
-        HBox.setHgrow(spaceFiller1, Priority.ALWAYS);
-        HBox.setHgrow(spaceFiller2, Priority.ALWAYS);
-        menuButtons.getChildren().addAll(replayButton, spaceFiller1, solveButton, spaceFiller2, exitButton);
-        menuButtons.setMaxWidth(25 * width);
-        root.getChildren().add(menuButtons);
-
+        root.getChildren().add(new StatisticsBar(width, gamesWonText, gamesLostText, winRateText));
+        root.getChildren().add(gameBoard = new ButtonsBoard(width, height));
+        root.getChildren().add(new MenuBar(width, replayButton, solveButton, exitButton));
         this.setTitle("Minesweeper");
         this.setScene(new Scene(root));
+    }
+
+    public void setBoard(@NotNull Button[] buttons, @NotNull int[] rawValues) {
+        gameBoard.setButtons(buttons);
+        this.rawValues = rawValues;
+        processValues();
     }
 
     private void processValues() {
@@ -68,13 +60,12 @@ public class BoardView extends Stage {
 
     public Deque<Integer> reveal(int pos) {
         int numOfRevealed = 0;
-        Button tmpButton;
         Deque<Integer> answer = new LinkedList<>();
         Deque<Integer> queue = new LinkedList<>();
         queue.add(pos);
         while (!queue.isEmpty()) {
             int id = queue.pop();
-            tmpButton = (Button) gameBoard.getChildren().get(id);
+            Button tmpButton = (Button) gameBoard.getChildren().get(id);
             if (!tmpButton.isDisable()) {
                 tmpButton.setText(values[id]);
                 tmpButton.setDisable(true);
@@ -89,16 +80,25 @@ public class BoardView extends Stage {
         return answer;
     }
 
-    public void disableAll() {
-        for (int pos = 0; pos < height * width; ++pos) {
-            gameBoard.getChildren().get(pos).setDisable(true);
-        }
+    public void disableBoard(boolean disabled) {
+        gameBoard.setDisable(disabled);
     }
 
     public void showBombs() {
         for (int pos = 0; pos < height * width; ++pos) {
-            if(values[pos].equals("*"))
+            if (values[pos].equals("*"))
                 ((Button) gameBoard.getChildren().get(pos)).setText("*");
         }
+    }
+
+    public void addResult(boolean victory) {
+        if (victory) {
+            ++gamesWon;
+            gamesWonText.setText(Integer.toString(gamesWon));
+        } else {
+            ++gamesLost;
+            gamesLostText.setText(Integer.toString(gamesLost));
+        }
+        winRateText.setText(String.format("%.2f", (float) gamesWon / (gamesWon + gamesLost)));
     }
 }
